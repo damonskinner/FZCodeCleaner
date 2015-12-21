@@ -1,28 +1,27 @@
 import os, fnmatch
-path = "/Users/damonskinner/Documents/Development/CodeBase/testParse" #Change this path string to the directory you want to refactor 
-old_string = "tmp" #The old string you want to change
-new_string = "" #The string you want to change to
+path = "/Users/dskinner/Documents/Development/tapwiser" #Change this path string to the directory you want to refactor 
+old_string = "@ {" #The old string you want to change
+new_string = "@{" #The string you want to change to
 extensions = ["*.m","*.h"] #The file types you want to modify
 exceptions = ["tmpSelf", "tmpFloat"] #Any specific edge case exceptions you want to omit from the refactoring
 skipDirectories = ["Pods","Libraries"] #Any sub-directories you want to omit from the refactoring
 
-alphabetArray = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","Q","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+#alphabetArray = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","Q","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 
 def findfilesAndReplaceString (path, filter):
-    for root, dirs, files in os.walk(path):
-        for file in fnmatch.filter(files, filter):
-        	with open(os.path.join(root, file), "r") as auto:
-        		if any(eachDirectory in os.path.join(root,file) for eachDirectory in skipDirectories):
-        			skippedFile = os.path.join(root,file)
-        			print 'Skipping {skippedFile}'.format(**locals())
-        		else:
-        			for eachLetter in alphabetArray:
-						stringToReplace = old_string + eachLetter
-						inplace_change(auto.name, stringToReplace, eachLetter.lower())
+	for root, dirs, files in os.walk(path):
+		for file in fnmatch.filter(files, filter):
+			with open(os.path.join(root, file), "r") as auto:
+				if any(eachDirectory in os.path.join(root,file) for eachDirectory in skipDirectories):
+					skippedFile = os.path.join(root,file)
+					#print 'Skipping {skippedFile}'.format(**locals())
+				else:
+					stringToReplace = old_string
+					inplace_change(auto.name, stringToReplace, new_string)
 
 def inplace_change(filename, old_string, new_string):
 	s = open(filename).read()
-	for word in s.split():
+	for word in s.split(' ', 1):
 		if not any(eachException in word for eachException in exceptions):
 			if old_string in word:
 				name = os.path.basename(filename)
